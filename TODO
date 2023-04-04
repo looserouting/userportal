@@ -1,0 +1,41 @@
+Allgemein
+---------
+- Flashmsg
+- Preisliste für Domains
+- Database und Abhängigkeiten. Was ist "must have"
+  Customer: id, Name, Adresse
+  User: Benutzer, zuordnung zu Customer, Rechte(lesend Buchhaltung, admin), Passwort
+  Products: (id,Name,price netto, welche mehrwert steuer?)
+  Invoices: berechnet products an Customer
+  Mahnwesen: benötigt Invoices
+
+Kundenportal
+----------
+- Stammdaten
+- weitere User Anlegen
+- Verträge/Abos
+- Invoices/Mahnungen
+
+
+- DNS-Verwaltung für Customer -> Customer muss Product haben
+- Domain-Verwaltung für Customer (OwnerC,AdminC,TechC,BillingC ) -> Customer muss Produkt haben.
+- Login to Virtualmin -> Kunden muss Product haben. Login über session
+
+Adminportal
+-----------
+Customer
+- beim Anlegen wird automatisch ein User mit Vollzugriff eingerichtet
+Users
+Products
+Invoices
+Mahnungen
+(Statistiken)
+(Newsletter)
+
+Shop
+----
+
+
+bli bla blubb
+-----------------
+composer dump-autoload --optimize
