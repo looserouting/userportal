@@ -37,6 +37,7 @@ $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
 $containerBuilder = new DI\ContainerBuilder();
 $containerBuilder->addDefinitions(__DIR__ . '/../config/php-di.conf.php');
 //$containerBuilder->useAnnotations(true);
+$containerBuilder->useAttributes(true);
 $container = $containerBuilder->build();
 
 switch ($routeInfo[0]) {

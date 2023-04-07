@@ -3,14 +3,13 @@
 namespace App\Controller;
 
 use Twig\Environment;
+use DI\Attribute\Inject;
+
 
 class AbstractController
 {
-    /**
-     * @Inject
-     * @var Environment
-     */
-    protected $twig;
+    #[Inject]
+    protected Environment $twig;
 
     protected function render($file)
     {

@@ -3,14 +3,12 @@
 namespace App\Controller;
 
 use App\Model\User\User;
+use DI\Attribute\Inject;
 
 class LoginController extends AbstractController
 {
-    /**
-     * @Inject
-     * @var User
-     */
-    private $user;
+    #[Inject]
+    private User $user;
 
     public function login()
     {

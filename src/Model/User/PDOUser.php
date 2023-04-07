@@ -18,7 +18,7 @@ class PDOUser
 
         $stmt->execute(array('username' => $username, 'password' => $password));
 
-		if ( $stmt->rowCount() = 1 )
+		if ( $stmt->rowCount() == 1 )
 			return true;
 		else
 			return false; // return result ??
