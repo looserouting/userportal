@@ -27,7 +27,6 @@ class ComposerStaticInitfb9f73a438b0547273d7b854931e1cbf
         array (
             'Psr\\Log\\' => 8,
             'Psr\\Container\\' => 14,
-            'Psr\\Cache\\' => 10,
         ),
         'M' => 
         array (
@@ -47,8 +46,6 @@ class ComposerStaticInitfb9f73a438b0547273d7b854931e1cbf
         ),
         'D' => 
         array (
-            'Doctrine\\Common\\Lexer\\' => 22,
-            'Doctrine\\Common\\Annotations\\' => 28,
             'DI\\' => 3,
         ),
         'A' => 
@@ -78,10 +75,6 @@ class ComposerStaticInitfb9f73a438b0547273d7b854931e1cbf
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'Psr\\Cache\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/psr/cache/src',
-        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
@@ -97,14 +90,6 @@ class ComposerStaticInitfb9f73a438b0547273d7b854931e1cbf
         'FastRoute\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
-        ),
-        'Doctrine\\Common\\Lexer\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/lexer/src',
-        ),
-        'Doctrine\\Common\\Annotations\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/doctrine/annotations/lib/Doctrine/Common/Annotations',
         ),
         'DI\\' => 
         array (
