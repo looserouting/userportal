@@ -2,10 +2,10 @@
 
 require_once(__DIR__ . "/../config/PDO.conf.php");
 
-//use function DI\create;
 use App\Model\User;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
+use Psr\Container\ContainerInterface;
 
 
 return [
@@ -14,11 +14,9 @@ return [
     'db.passwd' => PDO_PASSWD,
     'db.options'=> PDO_OPTIONS,
 
-    PDO::class => DI\create()
-            ->constructor(DI\get('db.dns'), DI\get('db.user'), DI\get('db.passwd'), DI\get('db.options')),
-
-    // Bind interface to an implementation
-    // ProductsRepository::class => create(PDOProductsRepository),
+    PDO::class => DI\factory(function(ContainerInterface $c) {
+      return new PDO($c->get('db.dns'), $c->get('db.user'), $c->get('db.passwd'), $c->get('db.options'));
+    }),
 
     //Configure twig
     Environment::class => DI\factory(function () {

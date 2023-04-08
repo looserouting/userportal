@@ -2,19 +2,19 @@
 
 namespace App\Model\User;
 
+use App\Model\User\PDOUser;
+use DI\Attribute\Inject;
+
 class User
 {
     private $id;
-    private $auth;
-    private $pdouser;
-    private $sessionuser;
+    private $auth = 0;
 
-    public function __construct(PDOUser $pdouser, SessionUser $sessionuser)
-    {
-        $this->pdouser = $pdouser;
-        $this->sessionuser = $sessionuser;
-        $this->auth = 0;
-    }
+    #[Inject]
+    private PDOUser $pdouser;
+
+    #[Inject]
+    private SessionUser $sessionuser;
 
     public function register()
     {

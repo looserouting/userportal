@@ -21,4 +21,5 @@ class AbstractController
         header('Location: $location', true, 302);
         exit();
     }
+
 }

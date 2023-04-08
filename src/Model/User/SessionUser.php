@@ -2,6 +2,7 @@
 
 namespace App\Model\User;
 
+
 class SessionUser
 {
 	private $username;

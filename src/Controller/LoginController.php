@@ -18,7 +18,7 @@ class LoginController extends AbstractController
             $this->redirect('/');
         }
 
-        // if POST then check formular and authenticate using User->authentivate
+        // if POST then check formular and authenticate using User->authenticate
         if ( $_SERVER['REQUEST_METHOD'] == 'POST')
         {
              if ( $this->user->authenticate($_POST['email'],$_POST['password']) )
