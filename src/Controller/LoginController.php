@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-use App\Model\User\User;
+use App\Service\LoginService;
 use DI\Attribute\Inject;
 
 class LoginController extends AbstractController
 {
     #[Inject]
-    private User $user;
+    private LoginService $user;
 
     public function login()
     {
@@ -21,10 +21,12 @@ class LoginController extends AbstractController
         // if POST then check formular and authenticate using User->authenticate
         if ( $_SERVER['REQUEST_METHOD'] == 'POST')
         {
-             if ( $this->user->authenticate($_POST['email'],$_POST['password']) )
+            $this->user->authenticate($_POST['email'],$_POST['password']);
+             if ( $this->user->isAuthenticated() )
              {
                  $this->redirect('/');
              }
+             //TODO else fehlermeldung ausgeben
         }
         echo $this->render('Login/login.html.twig');
     }

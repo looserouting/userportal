@@ -10,6 +10,12 @@ session_start();
 $httpMethod = $_SERVER['REQUEST_METHOD'];
 $uri = rawurldecode($_SERVER['REQUEST_URI']);
 
+
+$containerBuilder = new DI\ContainerBuilder();
+$containerBuilder->addDefinitions(__DIR__ . '/../config/php-di.conf.php');
+$containerBuilder->useAttributes(true);
+$container = $containerBuilder->build();
+
 // check authentication. If not authenticated redirect to /login
 // TODO Controll Session Timeout(set and check timeout)
 if ($uri != '/login') {
@@ -34,11 +40,6 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
 });
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);
-$containerBuilder = new DI\ContainerBuilder();
-$containerBuilder->addDefinitions(__DIR__ . '/../config/php-di.conf.php');
-//$containerBuilder->useAnnotations(true);
-$containerBuilder->useAttributes(true);
-$container = $containerBuilder->build();
 
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:

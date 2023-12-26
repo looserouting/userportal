@@ -5,7 +5,6 @@ namespace App\Controller;
 use Twig\Environment;
 use DI\Attribute\Inject;
 
-
 class AbstractController
 {
     #[Inject]

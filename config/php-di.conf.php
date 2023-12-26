@@ -7,16 +7,14 @@ use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Psr\Container\ContainerInterface;
 
-
 return [
     'db.dns'    => PDO_DNS,
     'db.user'   => PDO_USER,
     'db.passwd' => PDO_PASSWD,
     'db.options'=> PDO_OPTIONS,
 
-    PDO::class => DI\factory(function(ContainerInterface $c) {
-      return new PDO($c->get('db.dns'), $c->get('db.user'), $c->get('db.passwd'), $c->get('db.options'));
-    }),
+    PDO::class => DI\create()
+      ->constructor(DI\get('db.dns'), DI\get('db.user'), DI\get('db.passwd'), DI\get('db.options')),
 
     //Configure twig
     Environment::class => DI\factory(function () {
