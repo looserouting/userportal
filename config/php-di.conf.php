@@ -19,7 +19,11 @@ return [
     //Configure twig
     Environment::class => DI\factory(function () {
         $loader = new FilesystemLoader(__DIR__ . '/../src/View');
-        return new Environment($loader);
+        $twig = new Environment($loader, [
+          'debug' => true
+        ]);
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
+        return $twig;
     })
 
 ];

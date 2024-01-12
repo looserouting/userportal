@@ -2,20 +2,22 @@
 
 namespace App\Controller;
 
-use App\Service\LoginService;
+use App\Model\SessionUser;
 use DI\Attribute\Inject;
 
 class LoginController extends AbstractController
 {
     #[Inject]
-    private LoginService $user;
+    private SessionUser $user;
 
-    public function login()
+    public function login() : void
     {
-        // if User is already authenticated redirect to /
+        $error = array();
+
+        // if User is already authenticated redirect to
         if ( $this->user->isAuthenticated() )
         {
-            $this->redirect('/');
+            $this->redirect('/dashboard');
         }
 
         // if POST then check formular and authenticate using User->authenticate
@@ -26,8 +28,14 @@ class LoginController extends AbstractController
              {
                  $this->redirect('/');
              }
-             //TODO else fehlermeldung ausgeben
+             $error[] = 'Benutzername oder Kennwort falsch!';
         }
-        echo $this->render('Login/login.html.twig');
+        echo $this->render('Login/login.html.twig', $error);
+    }
+
+    public function logout() : void
+    {
+      session_destroy();
+      echo $this->redirect('/login');
     }
 }

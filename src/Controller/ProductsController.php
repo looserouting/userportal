@@ -6,21 +6,26 @@ namespace App\Controller;
 class ProductsController extends AbstractController
 {
   /**
-   * Aufbau der Stnadardseite. Suche und auflistung der Produkte
+   * Aufbau der Standardseite. Suche und Auflistung der Produkte
    */
-  function list()
+  function list() : void
+  {
+    echo $this->render('Products/products.html.twig');
+  }
+
+  function add() : void
   {
   }
 
-  function show()
+  function get() : void
+  {
+  }
+  
+  function modify() : void
   {
   }
 
-  function modify()
-  {
-  }
-
-  function delete()
+  function delete() : void
   {
   }
 }

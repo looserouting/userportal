@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+<header class="d-flex flex-wrap justify-content-between mb-4 border-bottom">
+  <a class="d-flex align-items-center" href="/"><img src="images/logo_klein.png" alt="logo"></a>
+  <form class="d-flex align-items-center" action="/logout" method="post">
+    <button class="btn btn-primary" type="submit">Logout</button>
+  </form>
+</header>
+{% endblock %}
+
+{% block navigation %}
+<navigation class="d-flex flex-column flex-shrink-0 p-3 bg-body-tertiary" style="width: 280px;">
+    <ul class="nav nav-pills flex-column mb-auto">
+      <li class="nav-item">
+        <a href="/" class="nav-link active" aria-current="page">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+          Dashboard
+        </a>
+      </li>
+      <li>
+        <a href="/orders" class="nav-link link-body-emphasis">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+          Orders
+        </a>
+      </li>
+      <li>
+        <a href="/products" class="nav-link link-body-emphasis">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+          Products
+        </a>
+      </li>
+      <li>
+        <a href="/customers" class="nav-link link-body-emphasis">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+          Customers
+        </a>
+      </li>
+      <li>
+        <a href="/invoicing" class="nav-link link-body-emphasis">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+          Invoicing
+        </a>
+      </li>
+      <li>
+        <a href="/tickets" class="nav-link link-body-emphasis">
+          <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+          Tickets
+        </a>
+      </li>
+    </ul>
+</navigation>
+{% endblock %}

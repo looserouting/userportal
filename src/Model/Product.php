@@ -2,22 +2,23 @@
 
 class Product
 {
-    function add()
+    function add() : void
     {
       return;
     }
 
-    function delete()
+    function delete() : void
     {
       return;
     }
 
-    function modify()
+    function modify() : void
     {
       return;
     }
 
-    function get_by_id($id){
+    function get_by_id(int $id)
+    {
       return;
     }
 }
