@@ -1,24 +1,27 @@
 <?php
+declare(strict_types=1);
+
+namespace App\Model;
 
 class Product
 {
-    function add() : void
+    public function add(): void
     {
-      return;
+
     }
 
-    function delete() : void
+    public function delete(): void
     {
-      return;
+
     }
 
-    function modify() : void
+    public function modify(): void
     {
-      return;
+
     }
 
-    function get_by_id(int $id)
+    public function get_by_id(int $id): void
     {
-      return;
+
     }
 }

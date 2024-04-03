@@ -1,8 +1,10 @@
 <?php
+declare(strict_types=1);
+
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-require __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 session_start();
 
@@ -17,10 +19,9 @@ $containerBuilder->useAttributes(true);
 $container = $containerBuilder->build();
 
 // check authentication. If not authenticated redirect to /login
-// TODO Controll Session Timeout(set and check timeout)
-// TODO check Login,LOGIN,"login " etc...
+// TODO Controle Session Timeout(set and check timeout)
 if ($uri != '/login') {
-    if ( !isset($_SESSION['sessionuser']) || $_SESSION['sessionuser']['auth'] < 1 ) {
+    if (!isset($_SESSION['sessionuser']) || $_SESSION['sessionuser']['auth'] < 1) {
         header('Location: /login', true, 302);
         exit();
     }
@@ -28,13 +29,19 @@ if ($uri != '/login') {
 
 // Register Routes
 // TODO CachedDispatcher
-$dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
+$dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) {
     $r->addRoute(['GET','POST'], '/login[?dst={referer}]', ['App\Controller\LoginController', 'login']);
     $r->addRoute('GET', '/', ['App\Controller\DashboardController','show']);
     $r->addRoute('GET', '/products', ['App\Controller\ProductsController','list']);
     $r->addRoute(['POST'], '/logout', ['App\Controller\LoginController', 'logout']);
+    $r->addRoute(['GET'], '/customers', ['App\Controller\CustomersController', 'list']);
+    $r->addRoute(['GET'], '/invoicing', ['App\Controller\InvoicingController', 'show']);
+    $r->addRoute(['GET'], '/orders', ['App\Controller\OrdersController', 'list']);
+    $r->addRoute(['GET'], '/pbx', ['App\Controller\PBXController', 'show']);
+    $r->addRoute(['GET'], '/users', ['App\Controller\UsersController', 'list']);
+    $r->addRoute(['GET'], '/tickets', ['App\Controller\TicketsController', 'list']);
 
-    $r->addGroup('/products', function(FastRoute\RouteCollector $r) {
+    $r->addGroup('/products', function (FastRoute\RouteCollector $r) {
         $r->addRoute('GET', '/add', ['App\Controller\ProductsController','add']);
         $r->addRoute('GET', '/delete/{id:\d+}', ['App\Controller\ProductsController','delete']);
         $r->addRoute('GET', '/modify/{id:\d+}', ['App\Controller\ProductsController','modify']);
@@ -62,5 +69,3 @@ switch ($routeInfo[0]) {
 
         break;
 }
-
-?>

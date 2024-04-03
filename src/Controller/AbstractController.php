@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Controller;
 
@@ -10,7 +11,7 @@ class AbstractController
     #[Inject]
     protected Environment $twig;
 
-    protected function render(string $file,mixed $vars=null) : string
+    protected function render(string $file, mixed $vars = null): string
     {
         return $this->twig->render($file, array(
             'session'   => $_SESSION,
@@ -20,7 +21,7 @@ class AbstractController
         ));
     }
 
-    protected function redirect(string $location) : void
+    protected function redirect(string $location): void
     {
         header('Location: '.$location, true, 302);
         exit();

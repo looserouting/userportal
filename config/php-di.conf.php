@@ -2,10 +2,10 @@
 
 require_once(__DIR__ . "/../config/PDO.conf.php");
 
-use App\Model\User;
+//use App\Model\User;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Psr\Container\ContainerInterface;
+//use Psr\Container\ContainerInterface;
 
 return [
     'db.dns'    => PDO_DNS,
