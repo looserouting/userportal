@@ -21,9 +21,9 @@ class UserSession
 
   /* Save User into $_SESSION */
   /**
-  * @param array<int|string, bool> $data
+    * @param array<int|string> $data Array with session parameters
   */
-    public function save($data): void
+    public function save(array $data): void
     {
         foreach($data as $key => $value) {
             print_r($data);

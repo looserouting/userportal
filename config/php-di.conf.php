@@ -13,6 +13,7 @@ return [
     'db.passwd' => PDO_PASSWD,
     'db.options'=> PDO_OPTIONS,
 
+    // if database does not exist go to setup()
     PDO::class => DI\create()
       ->constructor(DI\get('db.dns'), DI\get('db.user'), DI\get('db.passwd'), DI\get('db.options')),
 

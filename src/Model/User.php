@@ -10,7 +10,9 @@ class User
 {
     #[Inject]
     private PDO $dbo;
-
+    /**
+    * @return array<mixed, bool>
+    */
     public function findbycredentials(string $username, string $password): array|bool
     {
         $stmt = $this->dbo->prepare("select * from users where mail = :username and password = :password");
