@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -10,6 +11,6 @@ class CustomersController extends AbstractController
      */
     public function list(): void
     {
-      echo $this->render('Customers/customers.html.twig');
+        echo $this->render('Customers/customers.html.twig');
     }
 }

@@ -22,7 +22,12 @@ $container = $containerBuilder->build();
 // TODO Controle Session Timeout(set and check timeout)
 if ($uri != '/login') {
     if (!isset($_SESSION['sessionuser']) || $_SESSION['sessionuser']['auth'] < 1) {
-        header('Location: /login', true, 302);
+        if (preg_match($uri,"/^\/api/")) {
+            header('Content-Type: application/json');
+            echo json_encode(['response' => 403, 'message' => 'Fobidden']);
+        } else {
+            header('Location: /login', true, 302);
+        }
         exit();
     }
 }
@@ -47,6 +52,15 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
         $r->addRoute('GET', '/modify/{id:\d+}', ['App\Controller\ProductsController','modify']);
         $r->addRoute('GET', '/show/{id:\d+}', ['App\Controller\ProductsController','show']);
     });
+
+    $r->addGroup('/users', function (FastRoute\RouteCollector $r) {
+        $r->addRoute(['GET','POST'], '/add', ['App\Controller\UsersController','add']);
+    });
+
+    $r->addGroup('/api', function (FastRoute\RouteCollector $r) {
+        $r->addRoute(['GET','POST'], '/users', ['App\Controller\UsersController','fetch']);
+    });
+
 });
 
 $routeInfo = $dispatcher->dispatch($httpMethod, $uri);

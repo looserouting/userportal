@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Model;
@@ -19,10 +20,10 @@ class UserSession
         return false;
     }
 
-  /* Save User into $_SESSION */
-  /**
-    * @param array<int|string> $data Array with session parameters
-  */
+    /* Save User into $_SESSION */
+    /**
+      * @param array<int|string> $data Array with session parameters
+    */
     public function save(array $data): void
     {
         foreach($data as $key => $value) {

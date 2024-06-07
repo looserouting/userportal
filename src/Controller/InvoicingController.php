@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Controller;
@@ -10,6 +11,6 @@ class InvoicingController extends AbstractController
      */
     public function show(): void
     {
-      echo $this->render('Invoicing/invoicing.html.twig');
+        echo $this->render('Invoicing/invoicing.html.twig');
     }
 }
