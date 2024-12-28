@@ -29,7 +29,7 @@ class LoginController extends AbstractController
             }
             $error[] = 'Benutzername oder Kennwort falsch!';
         }
-        echo $this->render('Login/login.html.twig', $error);
+        echo $this->render('Login/login.html.twig', ['errors' => $error]);
     }
 
     public function logout(): void

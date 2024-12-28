@@ -19,12 +19,4 @@ class Customer
     {
         $this->id = $id;
     }
-
-    public function fetchAll(): array|bool
-    {
-        $stmt = $this->dbo->prepare("select * from customers where id = :id");
-        $stmt->execute(array('id' => $this->id));
-
-        return $stmt->fetchAll();
-    }
 }

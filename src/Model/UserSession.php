@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace App\Model;
 
 use DI\Attribute\Inject;
-use App\Model\User;
+use App\Repository\UserRepository;
 
 class UserSession
 {
     #[Inject]
-    private User $pdouser;
-
+    private UserRepository $user;
     public function get(string $param): mixed
     {
         if (isset($_SESSION['sessionuser'][$param])) {
@@ -27,7 +26,6 @@ class UserSession
     public function save(array $data): void
     {
         foreach($data as $key => $value) {
-            print_r($data);
             $_SESSION['sessionuser'][$key] = $value;
         }
 
@@ -39,10 +37,12 @@ class UserSession
 
     public function authenticate(string $username, string $password): void
     {
-        // search for user in database
-        if($userdata = $this->pdouser->findbycredentials($username, $password)) {
+        if($userdata = $this->user->findbycredentials($username, $password)) {
             $this->save($userdata);
             $this->save(['auth' => true]);
+        }else {
+            // Handle authentication failure
+            $this->save(['auth' => false]);
         }
     }
 

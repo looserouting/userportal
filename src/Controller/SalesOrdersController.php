@@ -11,6 +11,6 @@ class SalesOrdersController extends AbstractController
      */
     public function list(): void
     {
-        echo $this->render('Orders/orders.html.twig');
+        echo $this->render('SalesOrders/salesorders.html.twig');
     }
 }

@@ -1,41 +1,476 @@
 Allgemein
 ---------
 - Flashmsg
-- Preisliste für Domains
 - Database und Abhängigkeiten. Was ist "must have"
-  Customer: id, Name, Adresse
-  User: Benutzer, zuordnung zu Customer, Rechte(lesend Buchhaltung, admin), Passwort
-  Products: (id,Name,price netto, welche mehrwert steuer?)
-  Invoices: berechnet products an Customer
-  Mahnwesen: benötigt Invoices
+- Translations
+- Alles als Modul hinzufügen
+  - Menüeinträge
+  - Rechte
+  - Abhängigkeiten
+- MFA Pflicht (Email)
+- One Databese per Tenant
+
 
 Kundenportal
 ----------
 - Stammdaten
 - weitere User Anlegen
-- Verträge/Abos
+- Verträge/Abos einsehen, kündigen
 - Invoices/Mahnungen
-
-
-- DNS-Verwaltung für Customer -> Customer muss Product haben
-- Domain-Verwaltung für Customer (OwnerC,AdminC,TechC,BillingC ) -> Customer muss Produkt haben.
-- Login to Virtualmin -> Kunden muss Product haben. Login über session
+- Ticket erstellen
+- Management für Produkte
+  - DNS-Verwaltung für Customer -> Customer muss Product haben
+  - Domain-Verwaltung für Customer (OwnerC,AdminC,TechC,BillingC ) -> Customer muss Produkt haben.
+  - Login to Virtualmin -> Kunden muss Product haben. Login über session
 
 Adminportal
 -----------
-Customer
-- beim Anlegen wird automatisch ein User mit Vollzugriff eingerichtet
-Users
-Products
-Invoices
-Mahnungen
-(Statistiken)
-(Newsletter)
+- Customer
+- Users
+  - beim Anlegen wird automatisch ein User mit Vollzugriff eingerichtet
+- Products
+- Sales
+  - Offer
+  - Order
+  - Invoices
+  - Mahnungen
+- Purchases
+  - Offer
+  - Order
+  - Invoices (status, warte auf Freigabe, in den Zahlungslauf geben)
+- (Statistiken)
+- (Newsletter)
 
-Shop
-----
+Shopanbindung
+-------------
 
 
 bli bla blubb
 -----------------
 composer dump-autoload --optimize
+
+Translations
+-------------
+Erstelle eine Übersetzungsfunktion in PHP: Du benötigst eine PHP-Funktion, die Übersetzungen basierend auf einer Übersetzungsdatei bereitstellt. Diese Funktion sollte in der Lage sein, Platzhalter zu ersetzen, wie im vorherigen Beispiel gezeigt.
+function translate($key, $params = [], $locale = 'de') {
+    $translations = json_decode(file_get_contents(__DIR__ . "/translations/$locale.json"), true);
+    $translation = $translations[$key] ?? $key;
+
+    foreach ($params as $placeholder => $value) {
+        $translation = str_replace("%$placeholder%", $value, $translation);
+    }
+
+    return $translation;
+}
+Copy
+Insert
+
+Registriere den Twig-Filter: Du musst den translate Filter in Twig registrieren, damit er in deinen Templates verwendet werden kann. Dies geschieht normalerweise in der Konfiguration deines Twig-Setups.
+$twig = new \Twig\Environment($loader);
+
+$twig->addFilter(new \Twig\TwigFilter('translate', function ($key, $params = [], $locale = 'de') {
+    return translate($key, $params, $locale);
+}));
+Copy
+Insert
+
+Verwende den Filter im Template: Jetzt kannst du den translate Filter in deinem Twig-Template verwenden, um Texte zu übersetzen.
+{% extends 'extbase.html.twig' %}
+
+{% block main %}
+<h1>{{ 'User bearbeiten'|translate }}</h1>
+{% endblock %}
+Copy
+Insert
+
+Wenn du Platzhalter in deinem Text hast, kannst du diese ebenfalls übergeben:
+{% block main %}
+<h1>{{ 'Hello %name%'|translate({'name': userName}) }}</h1>
+{% endblock %}
+Copy
+Insert
+
+In diesem Beispiel wird der Platzhalter %name% durch den Wert der Variable userName ersetzt.
+Diese Schritte ermöglichen es dir, eine einfache Übersetzungslogik in dein Twig-Template zu integrieren, selbst wenn du ein eigenes Framework verwendest. Die genaue Implementierung kann je nach den Anforderungen deines Projekts variieren.
+
+
+modules
+-------------------
+MEMO an mich: Es muss eine Datei geben in der die Module registriert werden, samt Menüeinträge und Routen.
+
+
+Modular PHP Application with Twig Integration
+
+1. Modular Structure in PHP:
+   - Structure the application in a modular way, where each module has its own Controller, Model, and View files in a dedicated folder under "modules".
+
+2. Enabling and Disabling Modules:
+   - Configuration file to manage active modules:
+
+config/modules.php:
+```php
+return [
+    'ModulName1' => [
+        'active' => true,
+        'menu' => [
+            ['label' => 'ModulName1 Overview', 'route' => '?module=ModulName1&action=index']
+        ],
+    ],
+    'ModulName2' => [
+        'active' => false,
+        'menu' => [
+            ['label' => 'ModulName2 Overview', 'route' => '?module=ModulName2&action=index']
+        ],
+    ],
+];
+```
+
+3. Dynamic Navigation Menu:
+   - Function to generate a global navigation menu:
+
+core/menu.php:
+```php
+<?php
+function getNavigationMenu() {
+    $config = require __DIR__ . '/../config/modules.php';
+    $menu = [];
+
+    foreach ($config as $module => $settings) {
+        if ($settings['active'] && isset($settings['menu'])) {
+            foreach ($settings['menu'] as $menuItem) {
+                $menu[] = $menuItem;
+            }
+        }
+    }
+
+    return $menu;
+}
+?>
+```
+
+4. Twig Integration:
+   - Example of using Twig to render the navigation menu:
+
+core/Router.php:
+```php
+<?php
+class Router {
+    private $config;
+    private $twig;
+
+    public function __construct($twig) {
+        $this->config = require __DIR__ . '/../config/modules.php';
+        $this->twig = $twig;
+    }
+
+    public function handleRequest() {
+        $module = $_GET['module'] ?? 'defaultModule';
+        $action = $_GET['action'] ?? 'index';
+
+        $navigationMenu = getNavigationMenu();
+
+        echo $this->twig->render('layout.html.twig', [
+            'menu' => $navigationMenu,
+            'content' => $this->loadModule($module, $action)
+        ]);
+    }
+
+    private function loadModule($module, $action) {
+        // Load the module and action here
+    }
+}
+?>
+```
+
+5. Directory Structure:
+   Example directory structure for the application.
+
+project-root/
+├── config/
+│   └── modules.php            # Module configuration (activation and menu definitions)
+├── core/
+│   ├── Autoloader.php         # Autoloader for modules and classes
+│   ├── Router.php             # Router to handle requests and module routing
+│   └── menu.php               # Function to generate the navigation menu based on active modules
+├── index.php                  # Main entry point that loads Autoloader, Router, and Twig
+├── modules/                   # Directory for modules
+│   ├── ModulName1/
+│   │   ├── Controller.php     # Controller of the module
+│   │   ├── Model.php          # Model of the module
+│   │   └── View.php           # View of the module
+│   ├── ModulName2/
+│   │   ├── Controller.php
+│   │   ├── Model.php
+│   │   └── View.php
+├── templates/                 # Twig template directory
+│   ├── layout.html.twig       # Main layout template with global navigation menu and content placeholder
+│   ├── ModulName1/            # Module-specific templates
+│   │   └── index.html.twig    # Example template for an action in ModulName1
+└── vendor/                    # Composer dependencies, including Twig
+
+
+Die Funktion loadModule() lädt ein Modul und die zugehörige Aktion (Methode), um den Inhalt für die Anfrage zu generieren. Sie prüft dabei, ob das Modul aktiv ist und die gewünschte Aktion verfügbar ist, und gibt dann den generierten Inhalt zurück.
+
+Hier ist eine detaillierte Beschreibung sowie ein Beispiel für die Implementierung von loadModule():
+
+Beispiel für loadModule()
+Ziel von loadModule()
+
+Überprüfen, ob das angeforderte Modul aktiv ist (gemäß modules.php).
+Prüfen, ob die angeforderte Aktion im Controller des Moduls existiert.
+Falls aktiv und verfügbar, die Aktion ausführen und den resultierenden Inhalt zurückgeben.
+Falls das Modul oder die Aktion nicht verfügbar ist, eine Fehlerseite (404) zurückgeben.
+Beispielcode für loadModule()
+
+private function loadModule($module, $action) {
+    // Pfad zur Modulkonfiguration
+    $moduleConfig = $this->config[$module] ?? null;
+
+    // Prüfen, ob Modul konfiguriert und aktiv ist
+    if ($moduleConfig && $moduleConfig['active']) {
+        // Pfad zum Modul-Controller
+        $controllerPath = __DIR__ . "/../modules/$module/Controller.php";
+
+        // Prüfen, ob der Controller existiert
+        if (file_exists($controllerPath)) {
+            // Controller-Datei laden
+            require_once $controllerPath;
+
+            // Erstellen des Klassen-Namens
+            $controllerClass = $module . "\\Controller";
+
+            // Instanz des Controllers erstellen
+            if (class_exists($controllerClass)) {
+                $controller = new $controllerClass();
+
+                // Prüfen, ob die Methode existiert und aufrufbar ist
+                if (is_callable([$controller, $action])) {
+                    // Aktion ausführen und den Inhalt zurückgeben
+                    return $controller->$action();
+                }
+            }
+        }
+    }
+
+    // Wenn das Modul oder die Aktion nicht gefunden wird, eine 404-Fehlermeldung zurückgeben
+    return $this->twig->render('errors/404.html.twig');
+}
+
+Erläuterung des Codes
+Modulkonfiguration überprüfen:
+
+Wir verwenden $this->config[$module], um die Konfiguration für das angeforderte Modul zu laden.
+Wenn das Modul nicht in der Konfiguration definiert ist oder deaktiviert ist, wird die 404-Seite gerendert.
+Controller-Datei laden:
+
+Der Pfad zur Controller-Datei wird berechnet: modules/$module/Controller.php.
+Falls die Datei existiert, wird sie mit require_once eingebunden.
+Instanz des Controllers erstellen:
+
+Der Controller-Klassenname wird zusammengesetzt, z. B. ModulName1\\Controller.
+Wenn die Klasse existiert, wird eine Instanz erstellt.
+Methode überprüfen und ausführen:
+
+Mit is_callable() wird geprüft, ob die Methode (Aktion) im Controller existiert und aufrufbar ist.
+Falls die Aktion aufrufbar ist, wird sie ausgeführt, und das Ergebnis wird zurückgegeben.
+Fehlerseite (404) anzeigen:
+
+Wenn das Modul oder die Aktion nicht existiert oder nicht aktiv ist, wird eine 404-Seite gerendert.
+Beispiel für einen Controller
+Für die obige loadModule()-Funktion benötigen wir Controller-Klassen in den Modulen. Ein Beispiel für Controller.php in einem Modul könnte so aussehen:
+
+modules/ModulName1/Controller.php:
+
+In diesem Fall könnten Sie durch den Aufruf ?module=ModulName1&action=index die index()-Methode ausführen, die den Text „Welcome to ModulName1!“ zurückgibt.
+
+
+
+
+
+
+
+
+
+
+
+
+
+2. **Utilize the `$vars` Parameter in the `render` Method**
+
+In `AbstractController.php`, the `$vars` parameter in the `render` method is not being utilized. Passing `$vars` to the Twig template allows for dynamic content rendering.
+
+**Current Code:**
+
+```php
+protected function render(string $file, mixed $vars = null): string
+{
+    return $this->twig->render($file, array(
+        'session'   => $_SESSION,
+        'post'      => $_POST,
+        'get'       => $_GET,
+        'server'    => $_SERVER
+    ));
+}
+```
+
+**Improved Code:**
+
+```php
+protected function render(string $file, array $vars = []): string
+{
+    $vars = array_merge($vars, [
+        'session'   => $_SESSION,
+        'post'      => $_POST,
+        'get'       => $_GET,
+        'server'    => $_SERVER
+    ]);
+    return $this->twig->render($file, $vars);
+}
+```
+
+6. **Enhance Security by Regenerating Session ID on Login and Logout**
+
+To prevent session fixation attacks, regenerate the session ID upon successful login and logout.
+
+**In `LoginController.php`:**
+
+```php
+public function login(): void
+{
+    // Existing authentication logic
+    if ($this->user->isAuthenticated()) {
+        session_regenerate_id(true);
+        $this->redirect('/');
+    }
+    // Error handling
+}
+```
+
+**In `logout` Method:**
+
+```php
+public function logout(): void
+{
+    session_unset();
+    session_destroy();
+    session_regenerate_id(true);
+    $this->redirect('/login');
+}
+```
+
+7. **Implement Session Timeout Handling**
+
+Implement a session timeout to enhance security by logging out inactive users.
+
+**In `public/index.php`:**
+
+```php
+// Define timeout duration (e.g., 30 minutes)
+$timeoutDuration = 1800;
+
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY']) > $timeoutDuration) {
+    session_unset();
+    session_destroy();
+    header('Location: /login', true, 302);
+    exit();
+}
+
+$_SESSION['LAST_ACTIVITY'] = time();
+```
+
+8. **Disable Error Display in Production Environment**
+
+Displaying errors in production can expose sensitive information. Adjust error reporting based on the environment.
+
+**Current Code:**
+
+```php
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+```
+
+**Improved Code:**
+
+```php
+if ($_ENV['APP_ENV'] === 'production') {
+    error_reporting(0);
+    ini_set('display_errors', 'Off');
+} else {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
+}
+```
+
+Ensure `APP_ENV` is correctly set in your environment configuration.
+
+9. **Validate User Input**
+Ensure passwords are hashed using `password_hash` and verified with `password_verify`.
+
+10. **Manage Dependencies via Dependency Injection**
+
+Ensure that all dependencies are injected via the DI container for consistency and ease of testing.
+
+**In `public/index.php`:**
+
+```php
+$dispatcher = $container->get(FastRoute\Dispatcher::class);
+```
+
+**In DI Configuration (`config/php-di.conf.php`):**
+
+```php
+use FastRoute\RouteCollector;
+
+return [
+    // Existing definitions
+    FastRoute\Dispatcher::class => DI\factory(function () {
+        return FastRoute\simpleDispatcher(function (RouteCollector $r) {
+            // Define routes here
+        });
+    }),
+];
+```
+
+11. **Optimize Twig Environment Configuration**
+
+Configure Twig to enable caching in production and adjust debugging based on the environment.
+
+**In `config/php-di.conf.php`:**
+
+```php
+Environment::class => DI\factory(function () {
+    $loader = new FilesystemLoader(__DIR__ . '/../src/View');
+    $twig = new Environment($loader, [
+        'debug' => ($_ENV['APP_ENV'] !== 'production'),
+        'cache' => ($_ENV['APP_ENV'] === 'production') ? __DIR__ . '/../var/cache/twig' : false,
+    ]);
+    if ($_ENV['APP_ENV'] !== 'production') {
+        $twig->addExtension(new \Twig\Extension\DebugExtension());
+    }
+    return $twig;
+})
+```
+
+12. **Use Proper HTTP Status Codes**
+
+When redirecting or sending responses, use appropriate HTTP status codes.
+
+**In Authentication Failure (JSON Response):**
+
+```php
+http_response_code(403);
+header('Content-Type: application/json');
+echo json_encode(['response' => 403, 'message' => 'Forbidden']);
+```
+
+13. **Consistent Use of Strict Types**
+
+Ensure all PHP files declare strict types for consistency.
+
+**At the beginning of each PHP file:**
+
+```php
+declare(strict_types=1);
+
+// Rest of the code
+```

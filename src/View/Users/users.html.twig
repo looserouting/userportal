@@ -11,10 +11,7 @@
     <thead>
         <tr>
             <th>ID</th>
-            <th>Benutzername</th>
             <th>E-Mail</th>
-            <th>Erstellt am</th>
-            <th>Aktualisiert am</th>
         </tr>
     </thead>
     <tbody>
@@ -36,12 +33,18 @@
             "ajax": "api/users",
             "columns": [
                 { "data": "id" },
-                { "data": "username" },
-                { "data": "email" },
-                { "data": "created_at" },
-                { "data": "updated_at" }
+                { "data": "mail" }
             ],
-            "dom": 'lfrtip' // Fügt die Filterelemente hinzu
+            "layout": {
+                "top1": "searchPanes"
+            },
+            "columnDefs": [{
+                "searchPanes": {
+                "show": true,
+                },
+                "targets": '_all',
+            }],
+            "dom": 'Plrtip' // Fügt die Filterelemente hinzu
         });
     });
 </script>

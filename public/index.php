@@ -10,8 +10,8 @@ session_start();
 
 // Fetch method and URI from somewhere
 $httpMethod = $_SERVER['REQUEST_METHOD'];
-$uri = rawurldecode($_SERVER['REQUEST_URI']);
-
+$decoded_uri = rawurldecode($_SERVER['REQUEST_URI']);
+$uri = parse_url($decoded_uri, PHP_URL_PATH);
 
 $containerBuilder = new DI\ContainerBuilder();
 $containerBuilder->addDefinitions(__DIR__ . '/../config/php-di.conf.php');
@@ -21,8 +21,8 @@ $container = $containerBuilder->build();
 // check authentication. If not authenticated redirect to /login
 // TODO Controle Session Timeout(set and check timeout)
 if ($uri != '/login') {
-    if (!isset($_SESSION['sessionuser']) || $_SESSION['sessionuser']['auth'] < 1) {
-        if (preg_match($uri,"/^\/api/")) {
+    if (!isset($_SESSION['sessionuser']['auth']) || !$_SESSION['sessionuser']['auth']) {
+        if (preg_match("/^\/api/", $uri)) {
             header('Content-Type: application/json');
             echo json_encode(['response' => 403, 'message' => 'Fobidden']);
         } else {
@@ -41,7 +41,7 @@ $dispatcher = FastRoute\simpleDispatcher(function (FastRoute\RouteCollector $r) 
     $r->addRoute(['POST'], '/logout', ['App\Controller\LoginController', 'logout']);
     $r->addRoute(['GET'], '/customers', ['App\Controller\CustomersController', 'list']);
     $r->addRoute(['GET'], '/invoicing', ['App\Controller\InvoicingController', 'show']);
-    $r->addRoute(['GET'], '/orders', ['App\Controller\OrdersController', 'list']);
+    $r->addRoute(['GET'], '/orders', ['App\Controller\SalesOrdersController', 'list']);
     $r->addRoute(['GET'], '/pbx', ['App\Controller\PBXController', 'show']);
     $r->addRoute(['GET'], '/users', ['App\Controller\UsersController', 'list']);
     $r->addRoute(['GET'], '/tickets', ['App\Controller\TicketsController', 'list']);
