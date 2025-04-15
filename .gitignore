@@ -4,3 +4,4 @@ vendor/
 .php-cs-fixer.json
 .qodo
 .php-cs-fixer.cache
+composer.phar
