@@ -50,9 +50,9 @@ class UsersController extends AbstractController
         header('Content-Type: application/json');
 
         // Parameter von DataTables
-        $limit = $_GET['length']; // Anzahl der Datensätze pro Seite
-        $offset = $_GET['start']; // Startindex
-        $search = $_GET['search']['value']; // Suchbegriff
+        $limit = $_POST['length']; // Anzahl der Datensätze pro Seite
+        $offset = $_POST['start']; // Startindex
+        $search = $_POST['search']['value']; // Suchbegriff
 
         // Gesamtanzahl der Datensätze in der Datenbank
         $totalRecords = $this->userRepository->getTotalRecords();
@@ -78,7 +78,7 @@ class UsersController extends AbstractController
         $totalFiltered = empty($search) ? $totalRecords : $stmt->rowCount();
 
         echo json_encode([
-            'draw' => intval($_GET['draw']),
+            'draw' => intval($_POST['draw']),
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $totalFiltered,
             'data' => $users

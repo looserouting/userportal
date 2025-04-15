@@ -2,3 +2,5 @@ vendor/
 .vscode/
 .phpactor.json
 .php-cs-fixer.json
+.qodo
+.php-cs-fixer.cache

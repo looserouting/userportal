@@ -30,7 +30,10 @@
         $('#userTable').DataTable({
             "processing": true,
             "serverSide": true,
-            "ajax": "api/users",
+            "ajax": {
+                url: 'api/users',
+                type: 'POST'
+            },
             "columns": [
                 { "data": "id" },
                 { "data": "mail" }
