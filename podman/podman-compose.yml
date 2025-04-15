@@ -9,21 +9,33 @@ services:
     ports:
       - '8080:80'
       - '8443:443'
-    links:
-      - mariadb
     volumes:
       - ../:/var/www/html
+    environment:
+      # Optional, falls du php.ini oder Module brauchst
+      # Beispiel: PHP_MEMORY_LIMIT: 512M
+    networks:
+      - backend
+
   mariadb:
     image: "mariadb:11.4"
     restart: 'always'
     volumes:
-      - dbdata:/var/lib/mysql"
+      - dbdata:/var/lib/mysql
     ports:
       - '13306:3306'
+    env_file:
+      - ../.env
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
       MYSQL_DATABASE: "${MYSQL_DATABASE}"
       MYSQL_USER: "${MYSQL_USER}"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+    networks:
+      - backend
+
 volumes:
   dbdata:
+
+networks:
+  backend:
