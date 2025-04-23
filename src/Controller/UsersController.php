@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Repository\UserRepository;
+use App\Model\User;
 use PDO;
 use DI\Attribute\Inject;
 
@@ -32,9 +33,9 @@ class UsersController extends AbstractController
             $password = $_POST['password'];
             $email = $_POST['email'];
 
-            $createdUser = $this->userRepository->create($username, $password, $email);
-
-            if ($createdUser) {
+            $newUser = new User($username, $password, $email);
+            
+            if ($newUser->save()) {
                 echo "User erfolgreich erstellt!";
             } else {
                 echo "Fehler beim Erstellen des Users.";
@@ -55,6 +56,7 @@ class UsersController extends AbstractController
         $search = $_POST['search']['value']; // Suchbegriff
 
         // Gesamtanzahl der Datensätze in der Datenbank
+        // Muss ich das Repository injecten? es hat doch nur standardwerte?
         $totalRecords = $this->userRepository->getTotalRecords();
 
         // Suchabfrage

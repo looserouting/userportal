@@ -13,22 +13,23 @@ class User
     private PDO $dbo;
 
     public int $id;
+    public string $username;
     public string $mail;
     private string $password;
 
-    // Function to create a new user
-    public function create($username, $password, $email)
-    {
-        // TODO maybe fetch somehow so we also have id
+    function __construct(string $username, string $password, string $email) {
         $this->mail = $email;
         $this->password = $password;
+        $this->username = $username;
+    }
 
-        $this->dbo->query("INSERT INTO users (mail, password) VALUES (?, ?)", [
-            $this->mail,
-            $this->password
-        ]);
-
-        return $this;
+    // Function to create a new user
+    public function save(): bool
+    {
+        return $this->dbo->query(
+            "INSERT INTO users (mail, password) VALUES (?, ?)", 
+            [$this->mail, $this->password]
+        );
     }
 
     // Function to update an existing user

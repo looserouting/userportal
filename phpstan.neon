@@ -1,0 +1,9 @@
+parameters:
+	level:	4 
+	paths:
+		- src
+		- config
+		- public
+	ignoreErrors:
+		-
+			identifier: property.onlyRead

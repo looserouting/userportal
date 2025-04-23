@@ -24,6 +24,7 @@ class UserRepository {
     public function getUsers($start, $length, $searchValue, $orderColumn, $orderDir) {
         $searchQuery = "";
         if (!empty($searchValue)) {
+            //TODO use bindValue
             $searchQuery = "WHERE name LIKE '%$searchValue%' OR position LIKE '%$searchValue%' OR office LIKE '%$searchValue%'";
         }
 
@@ -48,12 +49,15 @@ class UserRepository {
     public function getFilteredRecords($searchValue) {
         $searchQuery = "";
         if (!empty($searchValue)) {
-            $searchQuery = "WHERE name LIKE '%$searchValue%' OR position LIKE '%$searchValue%' OR office LIKE '%$searchValue%'";
+            $searchQuery = "WHERE name LIKE :search OR position LIKE :search OR office LIKE :search";
         }
 
         $query = "SELECT COUNT(*) AS total FROM users $searchQuery";
-        $result = $this->dbo->query($query);
+        
+        $stmt = $this->dbo->prepare($query);
+        $stmt->bindValue(":search", $searchValue);
+        $stmt->execute();
 
-        return $result->fetch_assoc()['total'];
+        return (int)$stmt->fetch(PDO::FETCH_ASSOC)['total'];
     }
 }
